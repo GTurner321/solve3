@@ -248,10 +248,10 @@ if (l === 1) {
   }
 } else if (l === 2) {
   basePoints = 3;
-  if (inputCount === 1) {
+  if (inputCount <= 2) {
     bonusPoints = 2;
     pointsMessage += "3 +2 bonus";
-  } else if (inputCount === 2) {
+  } else if (inputCount === 3) {
     bonusPoints = 1;
     pointsMessage += "3 +1 bonus";
   } else {
