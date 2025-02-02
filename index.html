@@ -78,24 +78,22 @@
   </style>
 </head>
 <body>
-  <button id="new-equation-l1" class="new-equation-button">NEW EQUATION L1</button>
-  <button id="new-equation-l2" class="new-equation-button">NEW EQUATION L2</button>
-  <button id="new-equation-l3" class="new-equation-button">NEW EQUATION L3</button>
+  <button id="new-equation-top" class="new-equation-button">NEW EQUATION</button>
   <div id="equation-container"></div>
   <div id="score-box">Score = 0</div>
   <script>
     let a, b, c, d;
-    let l = null; // Initially set to null
     let score = 0;
     let successCount = 0;
     let inputCount = 0; // Track number of user inputs
 
-function updateScore(basePoints, bonusPoints) {
-  // Add base points and bonus points to the score
-  const totalPoints = basePoints + bonusPoints;
+function updateScore(bonusPoints) {
+  // Add base 3 points and bonus points to the score
+  const totalPoints = 3 + bonusPoints;
   score += totalPoints;
   document.getElementById("score-box").textContent = `Score = ${score}`;
 }
+
     function formatNumber(num) {
   // If the absolute value of the number is less than 0.0005, return '0' or '-0' depending on the sign
   if (Math.abs(num) < 0.0005) {
@@ -143,10 +141,6 @@ function updateScore(basePoints, bonusPoints) {
     }
 
     function validateInput(input) {
-      // Allow 'x' followed by a number (e.g., "x2", "x-5")
-      if (/^x-?\d+(\.\d+)?$/.test(input)) {
-      return true;
-    }
       // Disallow invalid patterns like '/nx', '*nx', '/-nx', '*-nx'
       if (/^[\/\*][\-]?\d*x$/.test(input)) {
         return false;
@@ -158,60 +152,23 @@ function updateScore(basePoints, bonusPoints) {
   // Reset inputCount when a new equation is generated
   inputCount = 0;
 
-  // Clear previous equation
   const equationContainer = document.getElementById("equation-container");
   equationContainer.innerHTML = "";
 
-  if (l === 1) {
-    const k = Math.floor(Math.random() * 4) + 1; // Random integer from 1 to 4
+  do {
+    a = Math.floor(Math.random() * 21) - 10;
+    c = Math.floor(Math.random() * 21) - 10;
+  } while (a === c || a === 0 || c === 0 || Math.abs(a - c) === 1); // Ensure a and c are not equal, not zero, and their difference is not 1
 
-    if (k === 1) {
-      do { a = Math.floor(Math.random() * 21) - 10; } while (a === 0 || a === 1);
-      b = 0; c = 0;
-      do { d = Math.floor(Math.random() * 21) - 10; } while (d === 0);
-    } else if (k === 2) {
-      a = 0; d = 0;
-      do { c = Math.floor(Math.random() * 21) - 10; } while (c === 0 || c === 1);
-      do { b = Math.floor(Math.random() * 21) - 10; } while (b === 0);
-    } else if (k === 3) {
-      a = 1; c = 0;
-      do { b = Math.floor(Math.random() * 21) - 10; } while (b === 0);
-      do { d = Math.floor(Math.random() * 21) - 10; } while (d === 0);
-    } else if (k === 4) {
-      a = 0; c = 1;
-      do { b = Math.floor(Math.random() * 21) - 10; } while (b === 0);
-      do { d = Math.floor(Math.random() * 21) - 10; } while (d === 0);
-    }
-  } 
-  
-  else if (l === 2) {
-    const k = Math.floor(Math.random() * 2) + 1; // Random integer from 1 to 2
+  b = Math.floor(Math.random() * 21) - 10;
+  d = Math.floor(Math.random() * 21) - 10;
 
-    if (k === 1) {
-      do { a = Math.floor(Math.random() * 21) - 10; } while (a === 0 || a === 1);
-      c = 0;
-      do { b = Math.floor(Math.random() * 21) - 10; } while (b === 0);
-      do { d = Math.floor(Math.random() * 21) - 10; } while (d === 0);
-    } else if (k === 2) {
-      a = 0;
-      do { c = Math.floor(Math.random() * 21) - 10; } while (c === 0 || c === 1);
-      do { b = Math.floor(Math.random() * 21) - 10; } while (b === 0);
-      do { d = Math.floor(Math.random() * 21) - 10; } while (d === 0);
-    }
-  } 
-  
-  else if (l === 3) {
-    do {
-      a = Math.floor(Math.random() * 21) - 10;
-      c = Math.floor(Math.random() * 21) - 10;
-    } while (a === c || a === 0 || c === 0 || Math.abs(a - c) === 1);
-
-    do { b = Math.floor(Math.random() * 21) - 10; } while (b === 0);
-    do { d = Math.floor(Math.random() * 21) - 10; } while (d === 0);
-  } 
-  
-  else {
-    return; // Do nothing if l is not set
+  // Ensure b and d are not zero
+  while (b === 0) {
+    b = Math.floor(Math.random() * 21) - 10;
+  }
+  while (d === 0) {
+    d = Math.floor(Math.random() * 21) - 10;
   }
 
   renderEquation();
@@ -236,49 +193,25 @@ if (
   successMessage.textContent = `Well done! You have solved the equation. x = ${solution}`;
   equationContainer.appendChild(successMessage);
 
-// Bonus points logic
-let basePoints = 0;
-let bonusPoints = 0;
-let pointsMessage = "Points: ";
+  // Bonus points logic
+  let pointsMessage = "Points: 3";
+  let bonusPoints = 0;
 
-// Determine base points based on level
-if (l === 1) {
-  basePoints = 1;
-  if (inputCount === 1) {
-    bonusPoints = 1;
-    pointsMessage += "1 +1 bonus";
-  } else {
-    pointsMessage += "1";
-  }
-} else if (l === 2) {
-  basePoints = 3;
-  if (inputCount <= 2) {
-    bonusPoints = 2;
-    pointsMessage += "3 +2 bonus";
-  } else if (inputCount === 3) {
-    bonusPoints = 1;
-    pointsMessage += "3 +1 bonus";
-  } else {
-    pointsMessage += "3";
-  }
-} else if (l === 3) {
-  basePoints = 5;
   if (inputCount <= 3) {
     bonusPoints = 3;
-    pointsMessage += "5 +3 bonus";
+    pointsMessage += " +3 bonus";
   } else if (inputCount === 4) {
     bonusPoints = 2;
-    pointsMessage += "5 +2 bonus";
+    pointsMessage += " +2 bonus";
   } else if (inputCount === 5) {
     bonusPoints = 1;
-    pointsMessage += "5 +1 bonus";
+    pointsMessage += " +1 bonus";
   } else {
-    pointsMessage += "5";
+    bonusPoints = 0; // No bonus points for 6 or more inputs
   }
-}
 
-// Update the score with base points and bonus points
-updateScore(basePoints, bonusPoints);
+  // Update the score with base points and bonus points
+  updateScore(bonusPoints);
 
   // Display the points message
   const pointsDiv = document.createElement("div");
@@ -286,36 +219,16 @@ updateScore(basePoints, bonusPoints);
   pointsDiv.textContent = pointsMessage;
   equationContainer.appendChild(pointsDiv);
 
-  // Create a new container for the buttons
-  const buttonContainer = document.createElement("div");
-  buttonContainer.style.textAlign = "center"; // Center align the buttons
-  buttonContainer.style.marginTop = "20px"; // Add space above the buttons
+  // New equation button
+  const newEquationButton = document.createElement("button");
+  newEquationButton.className = "new-equation-button";
+  newEquationButton.textContent = "NEW EQUATION";
+  newEquationButton.onclick = () => {
+    generateEquation();
+    window.scrollTo(0, 0); // Scroll back to the top for a new equation
+  };
+  equationContainer.appendChild(newEquationButton);
 
-  // Create new buttons
-  const buttonL1 = document.createElement("button");
-  buttonL1.textContent = "NEW EQUATION L1";
-  buttonL1.className = "new-equation-button";
-  buttonL1.onclick = () => { l = 1; handleNewEquation(); };
-
-  const buttonL2 = document.createElement("button");
-  buttonL2.textContent = "NEW EQUATION L2";
-  buttonL2.className = "new-equation-button";
-  buttonL2.onclick = () => { l = 2; handleNewEquation(); };
-
-  const buttonL3 = document.createElement("button");
-  buttonL3.textContent = "NEW EQUATION L3";
-  buttonL3.className = "new-equation-button";
-  buttonL3.onclick = () => { l = 3; handleNewEquation(); };
-
-  // Append buttons to the new container
-  buttonContainer.appendChild(buttonL1);
-  buttonContainer.appendChild(buttonL2);
-  buttonContainer.appendChild(buttonL3);
-
-  // Append the new container to the equation container
-  equationContainer.appendChild(buttonContainer);
-
-  
   successMessage.scrollIntoView({ behavior: "smooth", block: "center" });
   return;
 }
@@ -357,63 +270,53 @@ updateScore(basePoints, bonusPoints);
 });
 }
 
+    
     function processCommand(command) {
-  const value = parseFloat(command.slice(1).replace("x", "")) || 1;
-  const operation = command[0];
+      const value = parseFloat(command.slice(1).replace("x", "")) || 1;
+      const operation = command[0];
 
-  if (command.startsWith("x")) {
-    // If the command starts with 'x', interpret it as multiplication
-    a *= value;
-    b *= value;
-    c *= value;
-    d *= value;
-  } else if (command.includes("x")) {
-    // If 'x' appears elsewhere, modify 'a' and 'c'
-    if (operation === "+") {
-      a += value;
-      c += value;
-    } else if (operation === "-") {
-      a -= value;
-      c -= value;
+      if (command.includes("x")) {
+        if (operation === "+") {
+          a += value;
+          c += value;
+        } else if (operation === "-") {
+          a -= value;
+          c -= value;
+        }
+      } else {
+        if (operation === "+") {
+          b += value;
+          d += value;
+        } else if (operation === "-") {
+          b -= value;
+          d -= value;
+        } else if (operation === "*") {
+          a *= value;
+          b *= value;
+          c *= value;
+          d *= value;
+        } else if (operation === "/") {
+          a /= value;
+          b /= value;
+          c /= value;
+          d /= value;
+        }
+      }
     }
-  } else {
-    // Standard operations affecting 'b' and 'd' or multiplication/division affecting all
-    if (operation === "+") {
-      b += value;
-      d += value;
-    } else if (operation === "-") {
-      b -= value;
-      d -= value;
-    } else if (operation === "*") {
-      a *= value;
-      b *= value;
-      c *= value;
-      d *= value;
-    } else if (operation === "/") {
-      a /= value;
-      b /= value;
-      c /= value;
-      d /= value;
-    }
-  }
-}
 
- function handleNewEquation() {
-  if (l !== null) { // Only generate if l has been set
-    generateEquation();
-    window.scrollTo(0, 0); // Scroll to the top of the page
-  }
+    function handleNewEquation() {
+  generateEquation(); // Generates a new equation
+  window.scrollTo(0, 0); // Scroll to the top of the page
 }
-
 
 // Add event listener to the top button for generating a new equation
 window.onload = () => {
-    document.getElementById("new-equation-l1").addEventListener("click", () => { l = 1; handleNewEquation(); });
-document.getElementById("new-equation-l2").addEventListener("click", () => { l = 2; handleNewEquation(); });
-document.getElementById("new-equation-l3").addEventListener("click", () => { l = 3; handleNewEquation(); });
+  document.getElementById("new-equation-top").addEventListener("click", handleNewEquation);
 };
 
   </script>
 </body>
 </html>
+
+
 
