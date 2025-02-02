@@ -286,6 +286,36 @@ updateScore(basePoints, bonusPoints);
   pointsDiv.textContent = pointsMessage;
   equationContainer.appendChild(pointsDiv);
 
+  // Create a new container for the buttons
+  const buttonContainer = document.createElement("div");
+  buttonContainer.style.textAlign = "center"; // Center align the buttons
+  buttonContainer.style.marginTop = "20px"; // Add space above the buttons
+
+  // Create new buttons
+  const buttonL1 = document.createElement("button");
+  buttonL1.textContent = "NEW EQUATION L1";
+  buttonL1.className = "new-equation-button";
+  buttonL1.onclick = () => { l = 1; handleNewEquation(); };
+
+  const buttonL2 = document.createElement("button");
+  buttonL2.textContent = "NEW EQUATION L2";
+  buttonL2.className = "new-equation-button";
+  buttonL2.onclick = () => { l = 2; handleNewEquation(); };
+
+  const buttonL3 = document.createElement("button");
+  buttonL3.textContent = "NEW EQUATION L3";
+  buttonL3.className = "new-equation-button";
+  buttonL3.onclick = () => { l = 3; handleNewEquation(); };
+
+  // Append buttons to the new container
+  buttonContainer.appendChild(buttonL1);
+  buttonContainer.appendChild(buttonL2);
+  buttonContainer.appendChild(buttonL3);
+
+  // Append the new container to the equation container
+  equationContainer.appendChild(buttonContainer);
+
+  
   successMessage.scrollIntoView({ behavior: "smooth", block: "center" });
   return;
 }
