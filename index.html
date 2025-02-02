@@ -143,10 +143,6 @@ function updateScore(basePoints, bonusPoints) {
     }
 
     function validateInput(input) {
-        // Convert 'x' at the start to '*'
-      if (/^x[\-\d]/.test(input)) {
-      input = '*' + input.slice(1);
-  }
       // Disallow invalid patterns like '/nx', '*nx', '/-nx', '*-nx'
       if (/^[\/\*][\-]?\d*x$/.test(input)) {
         return false;
@@ -327,39 +323,46 @@ updateScore(basePoints, bonusPoints);
 });
 }
 
-    
     function processCommand(command) {
-      const value = parseFloat(command.slice(1).replace("x", "")) || 1;
-      const operation = command[0];
+  const value = parseFloat(command.slice(1).replace("x", "")) || 1;
+  const operation = command[0];
 
-      if (command.includes("x")) {
-        if (operation === "+") {
-          a += value;
-          c += value;
-        } else if (operation === "-") {
-          a -= value;
-          c -= value;
-        }
-      } else {
-        if (operation === "+") {
-          b += value;
-          d += value;
-        } else if (operation === "-") {
-          b -= value;
-          d -= value;
-        } else if (operation === "*") {
-          a *= value;
-          b *= value;
-          c *= value;
-          d *= value;
-        } else if (operation === "/") {
-          a /= value;
-          b /= value;
-          c /= value;
-          d /= value;
-        }
-      }
+  if (command.startsWith("x")) {
+    // If the command starts with 'x', interpret it as multiplication
+    a *= value;
+    b *= value;
+    c *= value;
+    d *= value;
+  } else if (command.includes("x")) {
+    // If 'x' appears elsewhere, modify 'a' and 'c'
+    if (operation === "+") {
+      a += value;
+      c += value;
+    } else if (operation === "-") {
+      a -= value;
+      c -= value;
     }
+  } else {
+    // Standard operations affecting 'b' and 'd' or multiplication/division affecting all
+    if (operation === "+") {
+      b += value;
+      d += value;
+    } else if (operation === "-") {
+      b -= value;
+      d -= value;
+    } else if (operation === "*") {
+      a *= value;
+      b *= value;
+      c *= value;
+      d *= value;
+    } else if (operation === "/") {
+      a /= value;
+      b /= value;
+      c /= value;
+      d /= value;
+    }
+  }
+}
 
  function handleNewEquation() {
   if (l !== null) { // Only generate if l has been set
