@@ -143,6 +143,10 @@ function updateScore(basePoints, bonusPoints) {
     }
 
     function validateInput(input) {
+        // Convert 'x' at the start to '*'
+      if (/^x[\-\d]/.test(input)) {
+      input = '*' + input.slice(1);
+  }
       // Disallow invalid patterns like '/nx', '*nx', '/-nx', '*-nx'
       if (/^[\/\*][\-]?\d*x$/.test(input)) {
         return false;
